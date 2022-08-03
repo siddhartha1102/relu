@@ -1,0 +1,21 @@
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+
+path=r"C:\Users\Siddhartha\Downloads\Amazon Scraping - Sheet1.csv"
+df=pd.read_csv(path)[['Asin','country']]
+#print(df)
+
+df=df[df['Asin'].str.contains('X')]
+#print(df)
+for ind in df.index:
+    url='https://www.amazon.{country}/dp/{Asin}'.format(country=df['country'][ind],Asin=df['Asin'][ind])
+    x = requests.get(url)
+    #print(url)
+    soup = BeautifulSoup(x.text, 'html.parser')
+    name=soup.find("span", { "id" : "productTitle" })
+    cost=soup.find("span", { "class" : "productTitle" })
+    print(name.text[0])
+    print(cost.text[0])
+    
+#print(x.text)
